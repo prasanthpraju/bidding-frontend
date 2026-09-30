@@ -1,29 +1,33 @@
 const API_URL = "http://localhost:3000/api/v1";
 
 export async function getBiddings() {
-  const response = await fetch(
-    `${API_URL}/bidding`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  );
+  const response = await fetch(`${API_URL}/bidding`, {
+    method: "GET",
+    credentials: "include",
+  });
 
   return response.json();
 }
 
 export async function getBiddingById(id: string) {
+  const response = await fetch(`${API_URL}/bidding/${encodeURIComponent(id)}`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  return response.json();
+}
+export async function getParticipantsByBiddingId(biddingId: string) {
   const response = await fetch(
-    `${API_URL}/bidding/${encodeURIComponent(id)}`,
+    `${API_URL}/participants?biddingId=${encodeURIComponent(biddingId)}`,
     {
       method: "GET",
       credentials: "include",
-    }
+    },
   );
 
   return response.json();
 }
-
 export async function createBidding(data: {
   name: string;
   pool: number;
@@ -43,33 +47,25 @@ export async function createBidding(data: {
   formData.append("upiId", data.upiId);
 
   if (data.qrCodeImage) {
-    formData.append(
-      "qrCodeImage",
-      data.qrCodeImage
-    );
+    formData.append("qrCodeImage", data.qrCodeImage);
   }
 
-  const response = await fetch(
-    `${API_URL}/bidding`,
-    {
-      method: "POST",
-      credentials: "include",
-      body: formData,
-    }
-  );
+  const response = await fetch(`${API_URL}/bidding`, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  });
 
   return response.json();
 }
 
-export async function deleteBidding(
-  id: string
-) {
+export async function deleteBidding(id: string) {
   const response = await fetch(
     `${API_URL}/bidding?id=${encodeURIComponent(id)}`,
     {
       method: "DELETE",
       credentials: "include",
-    }
+    },
   );
 
   return response.json();

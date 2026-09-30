@@ -72,7 +72,9 @@ const BiddingDashboard = () => {
       console.log("DELETE BIDDING:", data);
 
       if (data.success) {
-        setBiddings((previous) => previous.filter((item) => item.id !== id));
+        setBiddings((previous) =>
+          previous.filter((item) => item.id !== id),
+        );
       } else {
         alert(data.error || "Failed to delete bidding");
       }
@@ -88,15 +90,16 @@ const BiddingDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white font-['Inter',system-ui,sans-serif] antialiased">
+      <div className="min-h-screen flex items-center justify-center bg-white text-black font-['Inter',system-ui,sans-serif] antialiased">
         <div className="text-center">
-          <div className="relative w-12 h-12 mx-auto">
-            <div className="absolute inset-0 rounded-full border-2 border-gray-200" />
-            <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-red-600 animate-spin" />
+          <div className="relative mx-auto h-10 w-10">
+            <div className="absolute inset-0 rounded-full border-2 border-neutral-200" />
+
+            <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-red-500 animate-spin" />
           </div>
 
-          <p className="mt-5 text-xs font-semibold uppercase tracking-widest text-gray-400">
-            Loading schemes
+          <p className="mt-5 text-[11px] font-black uppercase tracking-[0.2em] text-neutral-400">
+            Loading bidding
           </p>
         </div>
       </div>
@@ -113,40 +116,53 @@ const BiddingDashboard = () => {
           HEADER
       ========================= */}
 
-      <header className="sticky top-0 z-10 border-b border-gray-200 bg-white/95 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
-          {/* LEFT */}
+      <header className="border-b border-neutral-200 bg-white">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
+          <div className="flex flex-col gap-7 py-8 sm:flex-row sm:items-end sm:justify-between">
+            {/* LEFT */}
 
-          <div>
+            <div>
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="group inline-flex cursor-pointer items-center gap-2 text-[11px] font-black uppercase tracking-[0.18em] text-neutral-400 transition-colors hover:text-black"
+              >
+                <span className="text-base transition-transform duration-200 group-hover:-translate-x-1">
+                  ←
+                </span>
+
+                Back to Dashboard
+              </button>
+
+              <div className="mt-6 flex items-center gap-3">
+                <span className="h-2.5 w-2.5 rounded-full bg-red-500" />
+
+                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-red-500">
+                  Live Bidding
+                </span>
+              </div>
+
+              <h1 className="mt-3 text-4xl font-black leading-none tracking-[-0.04em] text-black sm:text-5xl lg:text-6xl">
+                Bidding
+                <span className="text-red-500">.</span>
+              </h1>
+
+              <p className="mt-4 max-w-xl text-sm font-medium leading-6 text-neutral-500 sm:text-base">
+                Create, manage and monitor all your bidding schemes from one
+                place.
+              </p>
+            </div>
+
+            {/* CREATE BUTTON */}
+
             <button
-              onClick={() => navigate("/dashboard")}
-              className="group inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gray-400 hover:text-black transition-colors"
+              onClick={() => setShowModal(true)}
+              className="inline-flex cursor-pointer items-center justify-center gap-3 rounded-full bg-black px-6 py-3.5 text-xs font-black uppercase tracking-[0.15em] text-white transition-all duration-200 hover:bg-red-500 active:scale-[0.97]"
             >
-              <span className="transition-transform group-hover:-translate-x-1">
-                ←
-              </span>
-              Back to Dashboard
+              <span className="text-xl font-normal leading-none">+</span>
+
+              New Bidding
             </button>
-
-            <h1 className="mt-4 text-4xl sm:text-5xl font-black tracking-tight leading-none text-black">
-              Bidding
-              <br className="sm:hidden" /> Dashboard
-            </h1>
-
-            <p className="mt-3 text-sm font-medium text-gray-500">
-              Manage every bidding scheme you run.
-            </p>
           </div>
-
-          {/* CREATE */}
-
-          <button
-            onClick={() => setShowModal(true)}
-            className="shrink-0 inline-flex items-center gap-2 rounded-full bg-red-600 px-6 py-3.5 text-sm font-black uppercase tracking-wider text-white transition-all hover:bg-red-700 active:scale-95"
-          >
-            <span className="text-lg leading-none">+</span>
-            New Bidding
-          </button>
         </div>
       </header>
 
@@ -154,52 +170,83 @@ const BiddingDashboard = () => {
           MAIN
       ========================= */}
 
-      <main className="max-w-7xl mx-auto px-6 py-12">
-        {/* EMPTY STATE */}
+      <main className="max-w-7xl mx-auto px-6 py-10 sm:px-8 lg:px-10 lg:py-14">
+        {/* SECTION HEADER */}
+
+        {biddings.length > 0 && (
+          <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-red-500">
+                Your workspace
+              </p>
+
+              <h2 className="mt-2 text-2xl font-black tracking-tight text-black sm:text-3xl">
+                Bidding Schemes
+              </h2>
+            </div>
+
+            <p className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+              {biddings.length}{" "}
+              {biddings.length === 1 ? "Scheme" : "Schemes"}
+            </p>
+          </div>
+        )}
+
+        {/* =========================
+            EMPTY STATE
+        ========================= */}
 
         {biddings.length === 0 ? (
-          <div className="flex flex-col items-center justify-center min-h-[520px] text-center rounded-3xl border-2 border-dashed border-gray-200 bg-gray-50">
-            <div className="w-20 h-20 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center mb-8">
-              <span className="text-4xl font-black text-red-600 leading-none">
+          <div className="flex min-h-[500px] flex-col items-center justify-center rounded-3xl border border-neutral-200 bg-neutral-50 px-6 text-center">
+            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-black">
+              <span className="text-4xl font-light leading-none text-white">
                 +
               </span>
             </div>
 
-            <h2 className="text-4xl font-black tracking-tight text-black">
-              No Schemes Yet
-            </h2>
+            <div className="mt-8">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-red-500">
+                Bidding Workspace
+              </p>
 
-            <p className="mt-3 max-w-sm text-sm font-medium text-gray-500">
-              You haven't created any bidding schemes. Start one and invite your
-              members.
-            </p>
+              <h2 className="mt-3 text-3xl font-black tracking-tight text-black sm:text-4xl">
+                No Schemes Yet
+              </h2>
+
+              <p className="mx-auto mt-4 max-w-md text-sm font-medium leading-6 text-neutral-500">
+                You haven't created any bidding schemes yet. Create your first
+                scheme and start managing your bidding event.
+              </p>
+            </div>
 
             <button
               onClick={() => setShowModal(true)}
-              className="mt-9 rounded-full bg-red-600 px-8 py-3.5 text-sm font-black uppercase tracking-wider text-white transition-all hover:bg-red-700 active:scale-95"
+              className="mt-8 cursor-pointer rounded-full bg-red-500 px-7 py-3.5 text-xs font-black uppercase tracking-[0.15em] text-white transition-all duration-200 hover:bg-black active:scale-[0.97]"
             >
               Create Your First Bidding
             </button>
           </div>
         ) : (
-          /* BIDDING CARDS */
+          /* =========================
+             BIDDING CARDS
+          ========================= */
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {biddings.map((bidding) => (
               <div
                 key={bidding.id}
-                className="group flex flex-col rounded-3xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-red-200 hover:shadow-lg"
+                className="group flex flex-col rounded-3xl border border-neutral-200 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-xl sm:p-6"
               >
                 {/* TOP */}
 
                 <div className="flex items-center justify-between gap-3">
-                  <span className="rounded-full border border-red-100 bg-red-50 px-3.5 py-1.5 text-[11px] font-black uppercase tracking-widest text-red-600">
+                  <span className="inline-flex rounded-full bg-red-50 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.15em] text-red-500">
                     {bidding.bidCode}
                   </span>
 
                   <button
                     onClick={() => handleDelete(bidding.id)}
-                    className="rounded-full px-3 py-1.5 text-[11px] font-black uppercase tracking-wider text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                    className="cursor-pointer rounded-full px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-neutral-400 transition-colors hover:bg-red-50 hover:text-red-500"
                   >
                     Delete
                   </button>
@@ -207,27 +254,35 @@ const BiddingDashboard = () => {
 
                 {/* NAME */}
 
-                <h2 className="mt-6 text-2xl font-black tracking-tight leading-tight text-black">
-                  {bidding.name}
-                </h2>
+                <div className="mt-7 min-h-[62px]">
+                  <h2 className="text-2xl font-black leading-tight tracking-tight text-black">
+                    {bidding.name}
+                  </h2>
+                </div>
 
-                {/* POOL */}
+                {/* DIVIDER */}
 
-                <div className="mt-6 rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                <div className="my-6 h-px bg-neutral-100" />
+
+                {/* TOTAL POOL */}
+
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-neutral-400">
                     Total Pool
                   </p>
 
-                  <p className="mt-2 text-3xl font-black tracking-tight text-red-600">
+                  <p className="mt-2 text-3xl font-black tracking-tight text-black">
                     ₹{Number(bidding.pool).toLocaleString("en-IN")}
                   </p>
                 </div>
 
-                {/* MEMBERS + DURATION */}
+                {/* DETAILS */}
 
-                <div className="mt-6 grid grid-cols-2 gap-4">
-                  <div className="rounded-2xl border border-gray-100 bg-white p-4">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                <div className="mt-6 grid grid-cols-2 gap-3">
+                  {/* MEMBERS */}
+
+                  <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
+                    <p className="text-[9px] font-black uppercase tracking-[0.15em] text-neutral-400">
                       Members
                     </p>
 
@@ -236,15 +291,17 @@ const BiddingDashboard = () => {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-gray-100 bg-white p-4">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                  {/* DURATION */}
+
+                  <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
+                    <p className="text-[9px] font-black uppercase tracking-[0.15em] text-neutral-400">
                       Duration
                     </p>
 
                     <p className="mt-2 text-xl font-black tracking-tight text-black">
                       {bidding.duration}
 
-                      <span className="ml-1 text-xs font-bold uppercase text-gray-400">
+                      <span className="ml-1 text-[10px] font-black uppercase tracking-wide text-neutral-400">
                         {bidding.durationType}
                       </span>
                     </p>
@@ -257,9 +314,13 @@ const BiddingDashboard = () => {
                   onClick={() =>
                     navigate(`/bidding-dashboard/manage/${bidding.id}`)
                   }
-                  className="mt-7 w-full rounded-full bg-black py-3.5 text-xs font-black uppercase tracking-widest text-white transition-all group-hover:bg-red-600 active:scale-[0.97]"
+                  className="mt-6 flex w-full cursor-pointer items-center justify-between rounded-2xl bg-black px-5 py-4 text-left text-[10px] font-black uppercase tracking-[0.15em] text-white transition-all duration-200 hover:bg-red-500 active:scale-[0.98]"
                 >
-                  Manage Scheme →
+                  <span>Manage Scheme</span>
+
+                  <span className="text-base transition-transform duration-200 group-hover:translate-x-1">
+                    →
+                  </span>
                 </button>
               </div>
             ))}

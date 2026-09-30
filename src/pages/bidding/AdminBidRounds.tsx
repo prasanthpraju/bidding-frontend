@@ -54,11 +54,11 @@ const AdminBidRounds = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+      <div className="min-h-screen bg-neutral-50 flex items-center justify-center px-6">
         <div className="text-center">
           <div className="w-10 h-10 mx-auto rounded-full border-2 border-neutral-200 border-t-black animate-spin" />
 
-          <p className="mt-4 text-[11px] font-bold uppercase tracking-[0.22em] text-neutral-400">
+          <p className="mt-4 text-[10px] font-black uppercase tracking-[0.22em] text-neutral-400">
             Loading admin panel
           </p>
         </div>
@@ -69,16 +69,17 @@ const AdminBidRounds = () => {
   if (!bidding) {
     return (
       <div className="min-h-screen bg-neutral-50 flex flex-col items-center justify-center px-6 text-center">
-        <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-neutral-400">
+        <div className="w-16 h-16 rounded-2xl bg-black text-white flex items-center justify-center text-xl font-black">
           404
-        </p>
+        </div>
 
-        <h1 className="mt-3 text-3xl font-black tracking-tight text-black">
+        <h1 className="mt-6 text-3xl sm:text-4xl font-black tracking-tight text-black">
           Bidding not found
         </h1>
 
-        <p className="mt-2 text-sm text-neutral-500">
-          The bidding scheme you're looking for doesn't exist.
+        <p className="mt-3 max-w-md text-sm leading-6 text-neutral-500">
+          The bidding scheme you're looking for doesn't exist or is no longer
+          available.
         </p>
 
         <button
@@ -86,7 +87,7 @@ const AdminBidRounds = () => {
           onClick={() =>
             navigate(`/bidding-dashboard/manage/${id}`)
           }
-          className="mt-8 bg-black text-white px-6 py-3.5 rounded-full font-bold hover:bg-neutral-800 transition-colors"
+          className="mt-8 px-6 py-3.5 rounded-xl bg-black text-white font-bold hover:bg-neutral-800 transition-colors cursor-pointer"
         >
           Back to Dashboard
         </button>
@@ -104,32 +105,46 @@ const AdminBidRounds = () => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-neutral-50 text-black">
       {/* Header */}
-      <header className="bg-white border-b border-neutral-200">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between gap-4">
-          <div>
+      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-neutral-200">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 py-5">
+          <div className="flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <button
+                type="button"
+                onClick={() =>
+                  navigate(
+                    `/bidding-dashboard/manage/${bidding.id}`
+                  )
+                }
+                className="inline-flex items-center gap-2 text-sm font-bold text-neutral-500 hover:text-black transition-colors cursor-pointer"
+              >
+                <span className="text-lg">←</span>
+                Back to Dashboard
+              </button>
+
+              <div className="flex flex-wrap items-center gap-3 mt-4">
+                <h1 className="text-xl sm:text-2xl font-black tracking-tight">
+                  AdminBidROUNDS
+                </h1>
+
+                <span className="inline-flex items-center gap-2 bg-neutral-100 border border-neutral-200 px-3 py-1.5 rounded-full text-[11px] font-black text-neutral-600">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                  Rounds (0)
+                </span>
+              </div>
+            </div>
+
             <button
               type="button"
               onClick={() =>
-                navigate(
-                  `/bidding-dashboard/manage/${bidding.id}`
-                )
+                alert("Bidding page will be available soon.")
               }
-              className="text-sm font-semibold text-neutral-500 hover:text-black transition-colors"
+              className="hidden sm:inline-flex items-center justify-center px-5 py-3 rounded-xl bg-black text-white text-sm font-bold hover:bg-neutral-800 transition-colors cursor-pointer"
             >
-              ← Back to Dashboard
+              Bidding Page
             </button>
-
-            <div className="flex items-center gap-3 mt-3">
-              <h1 className="text-2xl font-black tracking-tight text-black">
-                AdminBidROUNDS
-              </h1>
-
-              <span className="bg-neutral-100 text-neutral-600 px-3 py-1 rounded-full text-xs font-bold">
-                Rounds (0)
-              </span>
-            </div>
           </div>
 
           <button
@@ -137,135 +152,248 @@ const AdminBidRounds = () => {
             onClick={() =>
               alert("Bidding page will be available soon.")
             }
-            className="bg-black text-white px-5 py-3 rounded-xl font-bold hover:bg-neutral-800 transition-colors"
+            className="sm:hidden mt-4 w-full inline-flex items-center justify-center px-5 py-3 rounded-xl bg-black text-white text-sm font-bold hover:bg-neutral-800 transition-colors cursor-pointer"
           >
             Bidding Page
           </button>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-10">
+      <main className="max-w-7xl mx-auto px-5 sm:px-6 py-8 sm:py-10">
+        {/* Page Intro */}
+        <div className="mb-7">
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-red-500">
+            Live Bidding Management
+          </p>
+
+          <h2 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight">
+            Manage your rounds.
+          </h2>
+
+          <p className="mt-3 max-w-2xl text-sm sm:text-base leading-7 text-neutral-500">
+            Create and manage bidding rounds for this scheme. Payments must be
+            verified before a new round can be created.
+          </p>
+        </div>
+
         {/* Bidding Overview */}
-        <div className="bg-white rounded-3xl border border-neutral-200 p-6 sm:p-8">
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400">
-                Live Bidding Session
-              </p>
+        <section className="bg-white rounded-3xl border border-neutral-200 overflow-hidden">
+          <div className="p-6 sm:p-8">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-7">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-red-500" />
 
-              <h2 className="mt-2 text-3xl sm:text-4xl font-black tracking-tight text-black">
-                {bidding.name}
-              </h2>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">
+                    Live Bidding Session
+                  </p>
+                </div>
 
-              <p className="mt-2 text-sm font-semibold text-neutral-500">
-                Ref ID: {bidding.bidCode}
-              </p>
-            </div>
+                <h3 className="mt-3 text-3xl sm:text-4xl font-black tracking-tight break-words">
+                  {bidding.name}
+                </h3>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              {/* Create Round */}
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <span className="px-3 py-1.5 rounded-lg bg-neutral-100 text-xs font-bold text-neutral-600">
+                    Ref ID
+                  </span>
+
+                  <span className="text-sm font-bold text-neutral-500 break-all">
+                    {bidding.bidCode}
+                  </span>
+                </div>
+              </div>
+
               <button
                 type="button"
                 onClick={handleCreateRound}
-                className="inline-flex items-center justify-center gap-2 bg-black text-white px-6 py-3.5 rounded-xl font-bold hover:bg-neutral-800 transition-colors"
+                className="w-full lg:w-auto inline-flex items-center justify-center gap-2 bg-black text-white px-6 py-3.5 rounded-xl font-bold hover:bg-neutral-800 transition-colors cursor-pointer"
               >
-                <span>＋</span>
-                <span>Create Round</span>
+                <span className="text-lg leading-none">+</span>
+                Create Round
+              </button>
+            </div>
+
+            {/* Round Status */}
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="rounded-2xl bg-neutral-50 border border-neutral-100 p-5">
+                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-neutral-400">
+                  Total Rounds
+                </p>
+
+                <p className="mt-2 text-3xl font-black">
+                  0
+                </p>
+
+                <p className="mt-1 text-xs text-neutral-400">
+                  No rounds created
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-neutral-50 border border-neutral-100 p-5">
+                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-neutral-400">
+                  Members
+                </p>
+
+                <p className="mt-2 text-3xl font-black">
+                  {bidding.members}
+                </p>
+
+                <p className="mt-1 text-xs text-neutral-400">
+                  Registered participants
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-neutral-50 border border-neutral-100 p-5">
+                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-neutral-400">
+                  Pool Value
+                </p>
+
+                <p className="mt-2 text-3xl font-black">
+                  ₹{Number(bidding.pool).toLocaleString("en-IN")}
+                </p>
+
+                <p className="mt-1 text-xs text-neutral-400">
+                  Total project value
+                </p>
+              </div>
+            </div>
+
+            {/* Empty Rounds */}
+            <div className="mt-8 border border-dashed border-neutral-300 rounded-3xl px-6 py-16 sm:py-20 text-center">
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-black text-white flex items-center justify-center text-2xl font-black">
+                0
+              </div>
+
+              <h4 className="mt-6 text-xl sm:text-2xl font-black">
+                No Rounds Found
+              </h4>
+
+              <p className="mt-2 text-sm text-neutral-500">
+                Create your first bidding round to get started.
+              </p>
+
+              <button
+                type="button"
+                onClick={handleCreateRound}
+                className="mt-6 inline-flex items-center justify-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold hover:bg-neutral-800 transition-colors cursor-pointer"
+              >
+                <span className="text-lg">+</span>
+                Create Round
               </button>
             </div>
           </div>
-
-          {/* Empty Rounds */}
-          <div className="mt-10 border border-dashed border-neutral-300 rounded-2xl py-20 text-center">
-            <div className="w-16 h-16 mx-auto rounded-full bg-neutral-100 flex items-center justify-center text-2xl">
-              📊
-            </div>
-
-            <h3 className="mt-5 text-xl font-black text-black">
-              No Rounds Found
-            </h3>
-
-            <p className="mt-2 text-sm text-neutral-500">
-              Create your first bidding round
-            </p>
-
-            <button
-              type="button"
-              onClick={handleCreateRound}
-              className="mt-6 bg-black text-white px-6 py-3 rounded-xl font-bold hover:bg-neutral-800 transition-colors"
-            >
-              Create Round
-            </button>
-          </div>
-        </div>
+        </section>
 
         {/* Payment Schedule */}
-        <div className="mt-8 bg-white rounded-3xl border border-neutral-200 p-6 sm:p-8">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400">
-                Step-by-Step Payment
-              </p>
+        <section className="mt-8 bg-white rounded-3xl border border-neutral-200 overflow-hidden">
+          <div className="p-6 sm:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-red-500">
+                  Step-by-Step Payment
+                </p>
 
-              <h2 className="mt-2 text-2xl font-black tracking-tight text-black">
-                {bidding.name}
-              </h2>
+                <h3 className="mt-2 text-2xl sm:text-3xl font-black tracking-tight">
+                  Payment Schedule
+                </h3>
 
-              <p className="mt-1 text-sm font-semibold text-neutral-500">
-                Ref ID: {bidding.bidCode}
-              </p>
+                <p className="mt-2 text-sm text-neutral-500">
+                  Payments are required before each bidding round can be
+                  created.
+                </p>
+              </div>
+
+              <span className="self-start bg-neutral-100 border border-neutral-200 text-neutral-600 px-3 py-1.5 rounded-full text-xs font-black">
+                Cycle: {bidding.durationType}
+              </span>
             </div>
 
-            <span className="bg-neutral-100 text-neutral-600 px-3 py-1.5 rounded-full text-xs font-bold">
-              Cycle: {bidding.durationType}
-            </span>
-          </div>
+            {/* Payment Steps */}
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              {Array.from(
+                { length: Math.min(bidding.duration, 5) },
+                (_, index) => (
+                  <div
+                    key={index}
+                    className="group border border-neutral-200 rounded-2xl p-5 hover:border-black transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="w-9 h-9 rounded-xl bg-black text-white flex items-center justify-center font-black">
+                        {index + 1}
+                      </div>
 
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            {Array.from(
-              { length: Math.min(bidding.duration, 5) },
-              (_, index) => (
-                <div
-                  key={index}
-                  className="border border-neutral-200 rounded-2xl p-5"
-                >
-                  <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center font-black">
-                    {index + 1}
+                      <span className="text-[10px] font-black uppercase tracking-wider text-neutral-300">
+                        Pending
+                      </span>
+                    </div>
+
+                    <p className="mt-5 text-sm font-black">
+                      Month {index + 1} Payment
+                    </p>
+
+                    <p className="mt-1 text-xs leading-5 text-neutral-400">
+                      Payment verification required
+                    </p>
                   </div>
+                ),
+              )}
+            </div>
 
-                  <p className="mt-4 text-sm font-bold text-black">
-                    Month {index + 1} Payment
+            {/* Financial Information */}
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="rounded-2xl bg-neutral-50 border border-neutral-100 p-6">
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-neutral-400">
+                    Admin Fee
                   </p>
+
+                  <span className="text-[10px] font-black uppercase tracking-wider text-neutral-400">
+                    Calculated
+                  </span>
                 </div>
-              ),
-            )}
+
+                <p className="mt-3 text-3xl font-black">
+                  ₹200
+                </p>
+
+                <p className="mt-1 text-xs text-neutral-400">
+                  Applicable administrative fee
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-black text-white p-6">
+                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-neutral-500">
+                  Total Project Value
+                </p>
+
+                <p className="mt-3 text-3xl font-black">
+                  ₹{Number(bidding.pool).toLocaleString("en-IN")}
+                </p>
+
+                <p className="mt-1 text-xs text-neutral-400">
+                  Total bidding pool
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer Status */}
+        <div className="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-1">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-neutral-400">
+              Nova Workspace
+            </p>
+
+            <p className="mt-1 text-xs text-neutral-400">
+              Bidding round management
+            </p>
           </div>
 
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div className="bg-neutral-50 rounded-2xl p-5">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400">
-                Admin Fee
-              </p>
-
-              <p className="mt-2 text-2xl font-black text-black">
-                ₹200
-              </p>
-
-              <p className="text-xs text-neutral-400 mt-1">
-                Calculated
-              </p>
-            </div>
-
-            <div className="bg-neutral-50 rounded-2xl p-5">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400">
-                Total Project Value
-              </p>
-
-              <p className="mt-2 text-2xl font-black text-black">
-                ₹{Number(bidding.pool).toLocaleString("en-IN")}
-              </p>
-            </div>
+          <div className="flex items-center gap-2 text-xs font-bold text-neutral-500">
+            <span className="w-2 h-2 rounded-full bg-green-500" />
+            System Online
           </div>
         </div>
       </main>
@@ -273,36 +401,59 @@ const AdminBidRounds = () => {
       {/* Create Round Popup */}
       {showCreatePopup && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center px-5">
-          <div className="w-full max-w-md bg-white rounded-3xl p-7 shadow-2xl">
-            <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center text-xl">
-              ⚠️
-            </div>
+          <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="p-7 sm:p-8">
+              <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-100 text-red-500 flex items-center justify-center font-black text-lg">
+                !
+              </div>
 
-            <h2 className="mt-5 text-2xl font-black text-black">
-              Cannot Create Round
-            </h2>
+              <p className="mt-6 text-[10px] font-black uppercase tracking-[0.2em] text-red-500">
+                Payment Required
+              </p>
 
-            <p className="mt-3 text-sm leading-6 text-neutral-500">
-              Payment for Month 1 has not been verified yet. Please
-              complete payment and wait for admin approval.
-            </p>
+              <h2 className="mt-2 text-2xl sm:text-3xl font-black tracking-tight">
+                Cannot Create Round
+              </h2>
 
-            <div className="mt-7 flex flex-col sm:flex-row gap-3">
-              <button
-                type="button"
-                onClick={() => setShowCreatePopup(false)}
-                className="flex-1 border border-neutral-200 text-black py-3.5 rounded-xl font-bold hover:border-black transition-colors"
-              >
-                Cancel
-              </button>
+              <p className="mt-3 text-sm leading-6 text-neutral-500">
+                Payment for Month 1 has not been verified yet. Please complete
+                the payment and wait for admin approval before creating the
+                first bidding round.
+              </p>
 
-              <button
-                type="button"
-                onClick={handlePayNow}
-                className="flex-1 bg-black text-white py-3.5 rounded-xl font-bold hover:bg-neutral-800 transition-colors"
-              >
-                Pay Now
-              </button>
+              <div className="mt-6 bg-neutral-50 border border-neutral-100 rounded-2xl p-5">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-xs font-bold text-neutral-500">
+                    Required step
+                  </span>
+
+                  <span className="text-xs font-black text-red-500">
+                    Month 1
+                  </span>
+                </div>
+
+                <div className="mt-3 h-1.5 bg-neutral-200 rounded-full overflow-hidden">
+                  <div className="w-1/5 h-full bg-red-500 rounded-full" />
+                </div>
+              </div>
+
+              <div className="mt-7 flex flex-col sm:flex-row gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowCreatePopup(false)}
+                  className="flex-1 border border-neutral-200 text-black py-3.5 rounded-xl font-bold hover:border-black transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handlePayNow}
+                  className="flex-1 bg-black text-white py-3.5 rounded-xl font-bold hover:bg-neutral-800 transition-colors cursor-pointer"
+                >
+                  Pay Now
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -312,17 +463,18 @@ const AdminBidRounds = () => {
       {showPaymentPopup && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center px-5 py-8">
           <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-3xl shadow-2xl">
-            <div className="px-7 py-6 border-b border-neutral-100 flex items-start justify-between gap-4">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400">
+            {/* Modal Header */}
+            <div className="px-6 sm:px-7 py-6 border-b border-neutral-100 flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-red-500">
                   Step-by-Step Payment
                 </p>
 
-                <h2 className="mt-2 text-2xl font-black text-black">
+                <h2 className="mt-2 text-2xl sm:text-3xl font-black tracking-tight break-words">
                   {bidding.name}
                 </h2>
 
-                <p className="mt-1 text-sm text-neutral-500 font-semibold">
+                <p className="mt-2 text-sm text-neutral-500 font-semibold break-all">
                   Ref ID: {bidding.bidCode}
                 </p>
               </div>
@@ -330,15 +482,16 @@ const AdminBidRounds = () => {
               <button
                 type="button"
                 onClick={() => setShowPaymentPopup(false)}
-                className="w-9 h-9 rounded-full border border-neutral-200 text-neutral-500 hover:text-black hover:border-black transition-colors"
+                className="shrink-0 w-9 h-9 rounded-xl border border-neutral-200 text-neutral-500 hover:text-black hover:border-black transition-colors cursor-pointer flex items-center justify-center"
               >
                 ✕
               </button>
             </div>
 
-            <div className="px-7 py-7">
+            <div className="px-6 sm:px-7 py-7">
+              {/* Step Header */}
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center font-black">
+                <div className="w-10 h-10 shrink-0 rounded-xl bg-black text-white flex items-center justify-center font-black">
                   1
                 </div>
 
@@ -347,33 +500,51 @@ const AdminBidRounds = () => {
                     Month 1 Payment
                   </p>
 
-                  <p className="text-xs text-neutral-400">
+                  <p className="text-xs text-neutral-400 mt-0.5">
                     Complete this payment before creating the first round.
                   </p>
                 </div>
               </div>
 
-              <div className="mt-7 bg-neutral-50 rounded-2xl p-6">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400">
+              {/* Payment Amount */}
+              <div className="mt-7 rounded-2xl bg-black text-white p-6">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500">
                   Payment Amount
                 </p>
 
-                <p className="mt-2 text-3xl font-black text-black">
+                <p className="mt-2 text-3xl sm:text-4xl font-black">
                   ₹
                   {(
                     Number(bidding.pool) /
                     Math.max(bidding.members, 1)
                   ).toLocaleString("en-IN")}
                 </p>
+
+                <p className="mt-2 text-xs text-neutral-400">
+                  Calculated per participant
+                </p>
               </div>
 
-              <div className="mt-6">
-                <p className="text-sm font-black text-black">
-                  Scan the QR and upload the receipt
-                </p>
+              {/* QR Section */}
+              <div className="mt-7">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-black text-black">
+                      Make Payment
+                    </p>
+
+                    <p className="mt-1 text-xs text-neutral-400">
+                      Scan the QR code using your UPI app.
+                    </p>
+                  </div>
+
+                  <span className="px-3 py-1.5 rounded-full bg-neutral-100 text-[10px] font-black uppercase tracking-wider text-neutral-500">
+                    UPI
+                  </span>
+                </div>
 
                 {bidding.qrCodeImage ? (
-                  <div className="mt-4 flex justify-center bg-neutral-50 rounded-2xl p-6">
+                  <div className="mt-5 flex justify-center bg-neutral-50 rounded-2xl p-6 border border-neutral-100">
                     <img
                       src={`http://localhost:3000${bidding.qrCodeImage}`}
                       alt="Admin QR"
@@ -381,14 +552,21 @@ const AdminBidRounds = () => {
                     />
                   </div>
                 ) : (
-                  <div className="mt-4 bg-neutral-50 rounded-2xl p-8 text-center text-sm text-neutral-400">
-                    Admin QR not available
+                  <div className="mt-5 bg-neutral-50 border border-dashed border-neutral-300 rounded-2xl p-10 text-center">
+                    <div className="w-12 h-12 mx-auto rounded-xl bg-white border border-neutral-200 flex items-center justify-center font-black text-neutral-400">
+                      QR
+                    </div>
+
+                    <p className="mt-4 text-sm font-bold text-neutral-500">
+                      Admin QR not available
+                    </p>
                   </div>
                 )}
               </div>
 
-              <div className="mt-5 bg-neutral-50 rounded-2xl p-5">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400">
+              {/* UPI ID */}
+              <div className="mt-5 rounded-2xl bg-neutral-50 border border-neutral-100 p-5">
+                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-neutral-400">
                   UPI ID
                 </p>
 
@@ -397,18 +575,19 @@ const AdminBidRounds = () => {
                 </p>
               </div>
 
-              <div className="mt-6">
-                <label className="block text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400 mb-2">
-                  Upload Screenshot
+              {/* Upload */}
+              <div className="mt-7">
+                <label className="block text-[10px] font-black uppercase tracking-[0.18em] text-neutral-400 mb-2">
+                  Payment Proof
                 </label>
 
-                <label className="flex items-center justify-center border border-dashed border-neutral-300 rounded-2xl p-7 cursor-pointer hover:border-black hover:bg-neutral-50 transition-colors">
+                <label className="flex items-center justify-center border border-dashed border-neutral-300 rounded-2xl p-8 cursor-pointer hover:border-black hover:bg-neutral-50 transition-colors">
                   <div className="text-center">
-                    <div className="text-2xl">
+                    <div className="w-11 h-11 mx-auto rounded-xl bg-black text-white flex items-center justify-center font-black text-xl">
                       ↑
                     </div>
 
-                    <p className="mt-2 text-sm font-bold text-black">
+                    <p className="mt-3 text-sm font-black text-black">
                       Choose payment screenshot
                     </p>
 
@@ -425,11 +604,12 @@ const AdminBidRounds = () => {
                 </label>
               </div>
 
+              {/* Modal Actions */}
               <div className="mt-7 flex flex-col-reverse sm:flex-row gap-3">
                 <button
                   type="button"
                   onClick={() => setShowPaymentPopup(false)}
-                  className="flex-1 border border-neutral-200 text-black py-3.5 rounded-xl font-bold hover:border-black transition-colors"
+                  className="flex-1 border border-neutral-200 text-black py-3.5 rounded-xl font-bold hover:border-black transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -438,10 +618,10 @@ const AdminBidRounds = () => {
                   type="button"
                   onClick={() =>
                     alert(
-                      "Payment proof API will be connected next."
+                      "Payment proof API will be connected next.",
                     )
                   }
-                  className="flex-1 bg-black text-white py-3.5 rounded-xl font-bold hover:bg-neutral-800 transition-colors"
+                  className="flex-1 bg-black text-white py-3.5 rounded-xl font-bold hover:bg-neutral-800 transition-colors cursor-pointer"
                 >
                   Submit Payment Proof
                 </button>

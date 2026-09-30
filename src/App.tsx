@@ -14,7 +14,11 @@ import ManageBidding from "./pages/bidding/ManageBidding";
 import ManageMembers from "./pages/bidding/ManageMembers";
 import AdminBidRounds from "./pages/bidding/AdminBidRounds";
 import PaymentVerification from "./pages/bidding/PaymentVerification";
+
 import ParticipantRegistration from "./pages/participant/ParticipantRegistration";
+import BiddingEntry from "./pages/bidding/BiddingEntry";
+import Bidding from "./pages/bidding/Bidding";
+
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
@@ -82,22 +86,29 @@ function App() {
   }
 
   // ==========================================
-  // HIDE NAVBAR
+  // HIDE NAVBAR + FOOTER
   // ==========================================
 
-  const hideNavbar =
+  const hideLayout =
     location.pathname === "/dashboard" ||
-    location.pathname.startsWith("/bidding-dashboard");
+    location.pathname.startsWith("/bidding-dashboard") ||
+    location.pathname.startsWith("/register/") ||
+    location.pathname.startsWith("/bidding-entry")||
+    location.pathname.startsWith("/bidding/");
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* NAVBAR */}
+      {/* ======================================
+          NAVBAR
+      ====================================== */}
 
-      {!hideNavbar && (
+      {!hideLayout && (
         <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogout} />
       )}
 
-      {/* MAIN */}
+      {/* ======================================
+          MAIN
+      ====================================== */}
 
       <main className="flex-1">
         <Routes>
@@ -135,7 +146,7 @@ function App() {
           />
 
           {/* ==================================
-              REGISTER
+              USER REGISTER
           ================================== */}
 
           <Route
@@ -218,11 +229,14 @@ function App() {
             }
           />
 
-          <Route
-            path="/register/:bidCode"
-            element={<ParticipantRegistration />}
-          />
+          {/* ==================================
+              PUBLIC PARTICIPANT REGISTRATION
+              USE BIDDING UUID
+          ================================== */}
 
+          <Route path="/register/:id" element={<ParticipantRegistration />} />
+          <Route path="/bidding-entry/:id" element={<BiddingEntry />} />
+          <Route path="/bidding/:id" element={<Bidding />} />
           {/* ==================================
               FALLBACK
           ================================== */}
@@ -231,9 +245,11 @@ function App() {
         </Routes>
       </main>
 
-      {/* FOOTER */}
+      {/* ======================================
+          FOOTER
+      ====================================== */}
 
-      <Footer />
+      {!hideLayout && <Footer />}
     </div>
   );
 }

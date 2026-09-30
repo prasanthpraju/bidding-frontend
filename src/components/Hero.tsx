@@ -1,174 +1,302 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useCallback, useEffect, useState } from "react";
 
-interface HeroProps {
-  isLoggedIn: boolean
-}
-
+/* Content is unchanged */
 const slides = [
   {
-    badge: 'LIVE BIDDING PLATFORM',
-    line1: 'Bid Live.',
-    line2: 'Win Big.',
-    text: 'Join real-time auctions and instant lucky draws — every bid moves the price, every second counts.',
-    image:
-      'https://images.unsplash.com/photo-1560269166-0f0e6c99e4a2?auto=format&fit=crop&w=1800&q=70',
+    id: "bidding",
+    eyebrow: "LIVE BIDDING PLATFORM",
+    title: "Bid Smart.",
+    highlight: "Win Your Round.",
+    description:
+      "Participate in secure and transparent bidding rounds, track your bidding activity, and stay updated with every event in real time.",
+    concept: "Real-Time • Transparent • Competitive",
+    background:
+      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=2200&q=90",
   },
   {
-    badge: 'ELECTRONICS AUCTIONS',
-    line1: 'Latest Gadgets.',
-    line2: 'Lowest Bids.',
-    text: 'From flagship phones to laptops — new electronics auctions go live every hour.',
-    image:
-      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1800&q=70',
+    id: "lucky",
+    eyebrow: "GAMIFY YOUR EVENT",
+    title: "Fair, Fun, & Fast",
+    highlight: "Lucky Draws.",
+    description:
+      "Turn your events into exciting experiences with automated and transparent lucky draws that keep everyone engaged.",
+    concept: "Instant • Fair • Exciting",
+    background:
+      "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=2200&q=90",
   },
-  {
-    badge: 'LUCKY DRAW EVENTS',
-    line1: 'One Ticket.',
-    line2: 'Any Prize.',
-    text: 'Every bid you place earns a free entry into our instant lucky draws.',
-    image:
-      'https://images.unsplash.com/photo-1607083206968-13611e3d76db?auto=format&fit=crop&w=1800&q=70',
-  },
-]
+];
 
-const Hero = ({ isLoggedIn }: HeroProps) => {
-  const [active, setActive] = useState(0)
+const SLIDE_MS = 6000;
+const pad = (n: number) => String(n).padStart(2, "0");
+
+const HeroSlider = () => {
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  const next = useCallback(() => setActive((p) => (p + 1) % slides.length), []);
+  const prev = useCallback(
+    () => setActive((p) => (p - 1 + slides.length) % slides.length),
+    [],
+  );
 
   useEffect(() => {
-    const id = setInterval(() => {
-      setActive((p) => (p + 1) % slides.length)
-    }, 6000)
-    return () => clearInterval(id)
-  }, [])
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [next, prev]);
 
-  const goTo = (i: number) => setActive(i)
-  const prev = () => setActive((p) => (p - 1 + slides.length) % slides.length)
-  const next = () => setActive((p) => (p + 1) % slides.length)
-  const slide = slides[active]
+  const slide = slides[active];
+  const words = slide.concept.split("•").map((w) => w.trim());
 
   return (
-    <section className="relative overflow-hidden bg-black text-white min-h-[680px] flex items-center">
-      {slides.map((s, i) => (
+    <section
+      id="hero-slider"
+      aria-roledescription="carousel"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      className="hs2 relative flex min-h-screen w-full flex-col overflow-hidden bg-[#F3EDE6] text-[#14100F] lg:flex-row"
+    >
+      {/* ================= TEXT PANEL ================= */}
+      <div className="relative z-20 flex flex-1 flex-col justify-between overflow-hidden px-6 pb-8 pt-28 sm:px-10 lg:w-[54%] lg:flex-none lg:px-16 lg:pt-32">
+        {/* animated background: counter-scrolling word bands */}
         <div
-          key={i}
-          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1200ms] ease-out ${
-            i === active ? 'opacity-100' : 'opacity-0'
-          }`}
-          style={{ backgroundImage: `url('${s.image}')` }}
           aria-hidden="true"
-        />
-      ))}
+          className="pointer-events-none absolute inset-0 select-none"
+        >
+          {[0, 1].map((row) => (
+            <div
+              key={`${slide.id}-${row}`}
+              className="absolute left-0 w-max"
+              style={{ top: row ? "62%" : "10%" }}
+            >
+              <div
+                className={`hs2-band hs2-display flex whitespace-nowrap text-[clamp(5rem,12vw,11rem)] font-extrabold leading-none tracking-[-0.04em] ${
+                  row ? "hs2-band-rev hs2-band-solid" : "hs2-band-outline"
+                }`}
+              >
+                {Array.from({ length: 8 }).map((_, k) => (
+                  <span key={k} className="px-8">
+                    {words.join(" · ")}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+          <div className="hs2-orb absolute -bottom-40 -left-40 h-[420px] w-[420px] rounded-full bg-[#D91E2E]/15 blur-[90px]" />
+        </div>
 
-      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/40" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/30" />
-
-      <div className="absolute top-20 left-1/3 h-24 w-24 rounded-full bg-white/10 blur-2xl animate-float" />
-      <div className="absolute bottom-24 left-1/4 h-16 w-16 rounded-full bg-white/10 blur-xl animate-float-slow" />
-      <div className="absolute top-1/3 right-10 h-32 w-32 rounded-full bg-white/5 blur-3xl animate-float-slow" />
-
-      <div className="relative max-w-6xl mx-auto px-6 sm:px-8 py-24 w-full grid md:grid-cols-[1.15fr_0.85fr] gap-12 items-center">
-        <div key={active} className="animate-fade-up">
-          <div className="inline-flex items-center gap-2 border border-white/25 bg-white/5 backdrop-blur-sm rounded-full px-4 py-1.5 mb-7">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+        <div key={slide.id} aria-live="polite" className="relative z-10">
+          <h1 className="hs2-display text-[clamp(3rem,6.6vw,6.75rem)] font-extrabold leading-[0.92] tracking-[-0.045em]">
+            <span className="block overflow-hidden pb-[0.08em]">
+              <span
+                className="hs2-line block"
+                style={{ animationDelay: "80ms" }}
+              >
+                {slide.title}
+              </span>
             </span>
-            <span className="text-xs font-semibold tracking-wider">{slide.badge}</span>
-          </div>
-
-          <h1 className="font-heading leading-[0.95] mb-6">
-            <span className="block text-4xl sm:text-6xl font-light">{slide.line1}</span>
-            <span className="block text-5xl sm:text-7xl font-bold">{slide.line2}</span>
+            <span className="block overflow-hidden pb-[0.12em] text-[#D91E2E]">
+              <span
+                className="hs2-line block"
+                style={{ animationDelay: "200ms" }}
+              >
+                {slide.highlight}
+              </span>
+            </span>
           </h1>
 
-          <p className="text-neutral-300 text-base sm:text-lg max-w-md mb-10">
-            {slide.text}
+          <p
+            className="hs2-fade mt-8 max-w-md text-base leading-7 text-[#14100F]/70 sm:text-[17px]"
+            style={{ animationDelay: "450ms" }}
+          >
+            {slide.description}
           </p>
-
-          <div className="flex flex-wrap items-center gap-4">
-            <Link
-              to={isLoggedIn ? '/dashboard' : '/contact'}
-              className="inline-flex items-center gap-2 bg-white text-black text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-neutral-200 hover:-translate-y-0.5 transition-all shadow-lg shadow-white/5"
-            >
-              {isLoggedIn ? 'Go to Dashboard' : 'Get Started'}
-              <span aria-hidden="true">→</span>
-            </Link>
-            <Link
-              to="/about"
-              className="inline-flex items-center gap-2 border border-white/30 text-white text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-white/10 transition-all"
-            >
-              Learn More
-            </Link>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-6 mt-10 text-xs text-neutral-400">
-            <span className="flex items-center gap-1.5">
-              <span className="h-1 w-1 rounded-full bg-white/60" /> 12K+ Active Bidders
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="h-1 w-1 rounded-full bg-white/60" /> 850+ Draws Won
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="h-1 w-1 rounded-full bg-white/60" /> 100% Transparent
-            </span>
-          </div>
         </div>
 
-        <div className="hidden md:flex justify-center">
-          <div className="relative h-80 w-80 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm flex items-center justify-center">
-            <div className="absolute inset-4 rounded-full border border-white/10 animate-spin-slow" />
-            <div className="absolute inset-0 rounded-full border border-white/5 animate-pulse-ring" />
-            <div className="absolute inset-12 rounded-full border border-dashed border-white/10 animate-spin-slow" />
-            <svg
-              width="88"
-              height="88"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              strokeWidth="1.2"
-              aria-hidden="true"
-            >
-              <path d="M14 12l6 6-2 2-6-6" />
-              <path d="M4 14l6-6 4 4-6 6z" />
-              <path d="M14 4l4 4" strokeLinecap="round" />
-              <circle cx="6" cy="18" r="1.4" fill="white" stroke="none" />
-            </svg>
+        {/* controls */}
+        <div className="relative z-10 mt-12 flex items-end gap-6 sm:gap-10">
+          <div className="hs2-display leading-none">
+            <span className="text-6xl font-extrabold tracking-tighter tabular-nums sm:text-7xl">
+              {pad(active + 1)}
+            </span>
+            <span className="ml-2 text-sm font-semibold text-[#14100F]/40 tabular-nums">
+              / {pad(slides.length)}
+            </span>
+          </div>
+
+          <div className="flex flex-1 flex-col gap-4 pb-1">
+            <div className="flex gap-2">
+              {slides.map((s, i) => (
+                <button
+                  key={s.id}
+                  onClick={() => setActive(i)}
+                  aria-label={`Go to ${s.id} slide`}
+                  aria-current={active === i}
+                  className="group h-5 flex-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D91E2E]"
+                >
+                  <span className="relative block h-[3px] w-full overflow-hidden bg-[#14100F]/15 group-hover:bg-[#14100F]/30">
+                    {active === i && (
+                      <span
+                        key={`p-${active}`}
+                        onAnimationEnd={next}
+                        className="hs2-progress absolute inset-0 origin-left bg-[#D91E2E]"
+                        style={{
+                          animationDuration: `${SLIDE_MS}ms`,
+                          animationPlayState: paused ? "paused" : "running",
+                        }}
+                      />
+                    )}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex">
+            {[
+              {
+                label: "Previous slide",
+                fn: prev,
+                d: "M19 12H5m0 0l6-6m-6 6l6 6",
+              },
+              {
+                label: "Next slide",
+                fn: next,
+                d: "M5 12h14m0 0l-6-6m6 6l-6 6",
+              },
+            ].map((b, i) => (
+              <button
+                key={b.label}
+                onClick={b.fn}
+                aria-label={b.label}
+                className={`flex h-14 w-14 items-center justify-center border border-[#14100F] transition-colors hover:bg-[#D91E2E] hover:border-[#D91E2E] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D91E2E] sm:h-16 sm:w-16 ${
+                  i ? "-ml-px bg-[#14100F] text-white" : ""
+                }`}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="square"
+                >
+                  <path d={b.d} />
+                </svg>
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-6 sm:left-8 flex items-center gap-2 z-10">
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => goTo(i)}
-            aria-label={`Go to slide ${i + 1}`}
-            className={`h-1 rounded-full transition-all duration-300 ${
-              i === active ? 'w-8 bg-white' : 'w-3 bg-white/30 hover:bg-white/60'
-            }`}
-          />
+      {/* ================= IMAGE PANEL ================= */}
+      <div className="hs2-cut relative order-first h-[42vh] flex-none overflow-hidden bg-[#14100F] lg:order-none lg:-ml-[7vw] lg:h-auto lg:flex-1">
+        {slides.map((s, i) => (
+          <div
+            key={s.id}
+            aria-hidden={active !== i}
+            className={`absolute inset-0 ${active === i ? "hs2-wipe z-10" : "z-0"}`}
+          >
+            <div
+              className={`hs2-photo absolute inset-0 bg-cover bg-center ${active === i ? "hs2-photo-on" : ""}`}
+              style={{ backgroundImage: `url("${s.background}")` }}
+            />
+            {/* duotone */}
+            <div className="absolute inset-0 bg-[#D91E2E] mix-blend-multiply" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#14100F]/85 via-[#14100F]/10 to-transparent" />
+            {active === i && <div className="hs2-sweep absolute inset-0" />}
+          </div>
         ))}
+
+        {/* eyebrow, set vertically along the edge */}
+        <div
+          key={`e-${slide.id}`}
+          className="hs2-fade absolute right-5 top-6 z-20 hidden text-xs font-semibold tracking-[0.35em] text-white/90 lg:block"
+          style={{ writingMode: "vertical-rl", animationDelay: "500ms" }}
+        >
+          {slide.eyebrow}
+        </div>
+
+        {/* mobile eyebrow */}
+        <div className="absolute left-6 top-24 z-20 text-[11px] font-semibold tracking-[0.25em] text-white lg:hidden">
+          {slide.eyebrow}
+        </div>
+
+        {/* concept words */}
+        <ul
+          key={`c-${slide.id}`}
+          className="absolute bottom-6 left-6 z-20 lg:bottom-14 lg:left-[calc(7vw+2rem)]"
+        >
+          {words.map((w, i) => (
+            <li key={w} className="overflow-hidden">
+              <span
+                className="hs2-line hs2-display block text-[clamp(1.5rem,3.6vw,3.5rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-white"
+                style={{ animationDelay: `${350 + i * 120}ms` }}
+              >
+                {w}
+              </span>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <div className="absolute bottom-6 right-6 sm:right-8 flex items-center gap-3 z-10">
-        <button
-          onClick={prev}
-          aria-label="Previous slide"
-          className="h-9 w-9 rounded-full border border-white/25 flex items-center justify-center hover:bg-white/10 transition-colors"
-        >
-          ‹
-        </button>
-        <button
-          onClick={next}
-          aria-label="Next slide"
-          className="h-9 w-9 rounded-full border border-white/25 flex items-center justify-center hover:bg-white/10 transition-colors"
-        >
-          ›
-        </button>
-      </div>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&display=swap');
+
+        .hs2 { font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif; }
+        .hs2-display { font-family: 'Bricolage Grotesque', 'Arial Narrow', ui-sans-serif, sans-serif; font-variation-settings: 'opsz' 96; }
+
+        .hs2-cut { clip-path: none; }
+        @media (min-width: 1024px) {
+          .hs2-cut { clip-path: polygon(7vw 0, 100% 0, 100% 100%, 0 100%); }
+        }
+
+        .hs2-line { transform: translateY(105%); animation: hs2Line 900ms cubic-bezier(.2,.8,.2,1) forwards; }
+        .hs2-fade { opacity: 0; animation: hs2Fade 800ms ease-out forwards; }
+        @property --w { syntax: '<percentage>'; inherits: false; initial-value: 12.5%; }
+
+        /* image reveal: vertical blinds opening */
+        .hs2-wipe {
+          -webkit-mask-image: repeating-linear-gradient(90deg, #000 0, #000 var(--w), transparent var(--w), transparent 12.5%);
+          mask-image: repeating-linear-gradient(90deg, #000 0, #000 var(--w), transparent var(--w), transparent 12.5%);
+          animation: hs2Blinds 1200ms cubic-bezier(.65,0,.25,1) both;
+        }
+        .hs2-photo { filter: grayscale(1) contrast(1.15); transform: scale(1.14); }
+        .hs2-photo-on { animation: hs2Drift 14s ease-in-out infinite alternate; }
+        .hs2-sweep {
+          background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.28) 50%, transparent 65%);
+          transform: translateX(-120%);
+          animation: hs2Sweep 4.5s ease-in-out 1.2s infinite;
+        }
+
+        /* text-panel background */
+        .hs2-band { animation: hs2Band 45s linear infinite; }
+        .hs2-band-rev { animation-direction: reverse; animation-duration: 60s; }
+        .hs2-band-outline { color: transparent; -webkit-text-stroke: 1.5px rgba(20,16,15,.14); }
+        .hs2-band-solid { color: rgba(217,30,46,.07); }
+        .hs2-orb { animation: hs2Orb 9s ease-in-out infinite alternate; }
+        .hs2-progress { animation-name: hs2Progress; animation-timing-function: linear; animation-fill-mode: forwards; }
+
+        @keyframes hs2Line { to { transform: translateY(0); } }
+        @keyframes hs2Fade { to { opacity: 1; } }
+        @keyframes hs2Blinds { from { --w: 0%; } to { --w: 12.5%; } }
+        @keyframes hs2Drift { from { transform: scale(1.14) translateX(-3%); } to { transform: scale(1.14) translateX(3%); } }
+        @keyframes hs2Sweep { 0% { transform: translateX(-120%); } 60%, 100% { transform: translateX(120%); } }
+        @keyframes hs2Band { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        @keyframes hs2Orb { from { transform: translate(0, 0) scale(1); } to { transform: translate(120px, -80px) scale(1.3); } }
+        @keyframes hs2Progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+        @media (prefers-reduced-motion: reduce) {
+          .hs2 *, .hs2 *::before, .hs2 *::after { animation: none !important; transition: none !important; }
+          .hs2-line { transform: none; }
+          .hs2-fade { opacity: 1; }
+        }
+      `}</style>
     </section>
-  )
-}
+  );
+};
 
-export default Hero
+export default HeroSlider;
